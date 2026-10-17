@@ -366,8 +366,11 @@ def _system_font_names():
             if os.path.isdir(d):
                 for f in os.listdir(d):
                     base = os.path.splitext(f)[0].lower().replace(' ', '')
+                    # 排除可变字体（variable font）：xdvipdfmx 不支持直接挂载 -vf 字体，会导致编译崩溃
+                    if base.endswith('-vf') or '_vf' in base or '-variable' in base:
+                        continue
                     names.add(base)
-                    for suf in ('-vf', '-regular', '-bold', '-italic', '-light', '-medium'):
+                    for suf in ('-regular', '-bold', '-italic', '-light', '-medium'):
                         if base.endswith(suf):
                             names.add(base[:-len(suf)])
                 return names
@@ -387,7 +390,10 @@ def _system_font_names():
                 for root, _dirs, files in os.walk(d):
                     for f in files:
                         if f.lower().endswith(('.ttf', '.otf', '.ttc')):
-                            names.add(os.path.splitext(f)[0].lower().replace(' ', ''))
+                            base = os.path.splitext(f)[0].lower().replace(' ', '')
+                            if base.endswith('-vf') or '_vf' in base or '-variable' in base:
+                                continue
+                            names.add(base)
         return names or None
     except Exception:
         return None
@@ -1951,6 +1957,8 @@ def run(args):
         if res is not None:
             print('[8] compile ok=%s pdf=%s rc=%s'
                   % (res.ok, os.path.basename(res.pdf) if res.pdf else '-', res.returncode))
+            if not res.ok:
+                fails.append('compile-failed:rc=%s' % res.returncode)
             if res.note:
                 print('     NOTE: %s' % res.note)
 

@@ -300,6 +300,12 @@ def which(name_or_path):
     #     scripts still lived at the repo root, so tools/ is one level ABOVE the
     #     skill (and it is git-ignored, so it will never be moved).
     base = os.path.basename(name_or_path)
+    if os.name == 'nt':
+        local = os.environ.get('LOCALAPPDATA') or os.path.expanduser('~/AppData/Local')
+        for cand in (base, base + '.exe'):
+            std_p = os.path.join(local, 'Programs', base, cand)
+            if os.path.isfile(std_p):
+                return std_p
     for cand in (base, base + '.exe'):
         for tools_dir in _tools_dirs():
             p = os.path.join(tools_dir, cand)

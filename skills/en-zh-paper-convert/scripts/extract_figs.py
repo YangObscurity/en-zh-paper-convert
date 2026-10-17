@@ -2405,8 +2405,8 @@ def run(args):
                         used_c.add(ci); used_k.add((fno, id(ln)))
                         fw = (c['x1'] - c['x0']) > pw * 0.55
                         mapping[fno] = {'page': pno, 'fullwidth': bool(fw), 'native': True,
-                                        'caption_pos': ('top' if c['bottom'] <= ln['top']
-                                                        else 'bottom'),
+                                        'caption_pos': ('bottom' if c['bottom'] <= ln['top']
+                                                        else 'top'),
                                         'bbox': [round(c['x0']), round(c['top']),
                                                  round(c['x1']), round(c['bottom'])],
                                         'cost': round(cost, 1)}
@@ -2622,7 +2622,7 @@ def run(args):
                 used_c.add(ci); used_k.add((fno, id(ln)))
                 fw = (x1 - x0) > pw * 0.55
                 mapping[fno] = {'page': pno, 'fullwidth': bool(fw), 'native': False,
-                                'caption_pos': 'top' if side == 'above' else 'bottom',
+                                'caption_pos': 'bottom' if side == 'above' else 'top',
                                 'cluster': [round(c['x0']), round(c['top']),
                                             round(c['x1']), round(c['bottom'])],
                                 'n_el': c['n'], 'n_img': c['nimg'], 'cost': round(cost, 1)}

@@ -1348,6 +1348,18 @@ def convert(src, figinfo, tabinfo, mode, avail, stats, figsdir=None, tabdir=None
             env = _fig(m.group(1).rstrip('.'), m.group(2).strip(), figinfo, mode, stats)
             outl.append(env if env else mathify_line(L))
             i += 1
+            # 吞掉紧随图题块内、多余的英文原图题或注记残行（如 "> Figure 1: ...", "> (Figure 1)..."），防止漏出成为正文悬空段
+            while i < n and lines[i].lstrip().startswith('>'):
+                nxt = lines[i].lstrip('>').strip()
+                if _figm(lines[i]) or RE_TAB.match(lines[i]):
+                    break
+                if re.match(r'^(?:(?:Figure|Fig\.?)\s*[0-9A-Za-z.\-]*\s*[:.\uff1a]?|[\uff08(]?(?:Figure|Fig\.?)|〔)', nxt, re.I):
+                    i += 1
+                    continue
+                if not nxt:
+                    i += 1
+                    continue
+                break
             continue
 
         # ---- Vector-recreated tables first: on a hit, insert the image and

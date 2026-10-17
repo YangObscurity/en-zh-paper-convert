@@ -137,6 +137,17 @@ def strip(src, keep_hr=False):
             i += 1
             continue
 
+        # 图注/表注/题注原文整行审计记录、文献说明等独立译注行
+        # 如「> 〔图注原文〕Figure 1: ...」、「> 〔说明〕按学术惯例保留原文著录...」
+        if re.match(r'^[ \t]*>?[ \t]*〔(?:图注原文|表注原文|题注原文|原文图注|原文表注|原文标题|原文图题|原文表题|说明|按翻译规范|翻译规范|译者注|译注)[^〕]*〕', L):
+            j = i + 1
+            if L.lstrip().startswith('>'):
+                while j < n and lines[j].lstrip().startswith('>') and not re.match(r'^[ \t]*>[ \t]*\*\*(?:图|表)\s*[0-9A-Za-z]', lines[j]):
+                    j += 1
+            removed['caption_notes'] = removed.get('caption_notes', 0) + (j - i)
+            i = j
+            continue
+
         # 全篇用于分隔翻译说明/自查清单的水平线
         if not keep_hr and re.match(r'^-{3,}\s*$', L):
             removed['hr'] += 1
