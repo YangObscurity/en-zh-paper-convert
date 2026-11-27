@@ -61,3 +61,6 @@ desktop.ini
 # tectonic 缓存回落目录（当用户 AppData 不可写时由 _backend.py 建立）
 .tectonic-cache/
 .work/**/.tectonic-cache/
+
+# 仓库根 scripts/：仅存放钩子本地依赖副本（如 audit_privacy_leak.py 的 worktree 修正版），不入库
+/scripts/
