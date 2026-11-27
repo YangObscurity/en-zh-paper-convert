@@ -2175,7 +2175,7 @@ def main(argv=None):
     ap.add_argument('--ledger', default=None, metavar='TSV',
                     help='版式台账（默认 <root>/.work/format-ledger.tsv）')
     ap.add_argument('--geometry', default=None, metavar='JSON',
-                    help='几何 JSON（默认 <root>/.work/geometry.json）')
+                    help='几何 JSON（默认 <root>/.work/<NN>/geometry.json，回退无 NN 路径）')
     ap.add_argument('--allow-no-ledger', action='store_true',
                     help='台账无该篇记录时仍继续（违反 R3，**不推荐**）')
     ap.add_argument('--allow-handmade-tables', action='store_true',

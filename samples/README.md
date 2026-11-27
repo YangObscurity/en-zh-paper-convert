@@ -10,7 +10,7 @@
 | DOI | [10.1371/journal.pone.0294236](https://doi.org/10.1371/journal.pone.0294236) |
 | 许可 | **CC BY 4.0**（Creative Commons Attribution License） |
 | 页数 | 8 |
-| 版式 | 单栏，612×792 pt（US Letter） |
+| 版式 | 单栏，612×792 bp（US Letter） |
 | 图表 | 1 张表（Table 1）、3 张图（Fig 1–3，其中 Fig 3 为多面板） |
 
 ### 为什么选它
@@ -29,8 +29,8 @@
 New-Item -ItemType Directory -Path Paper -Force | Out-Null
 Copy-Item samples\SRplot_2023_PLOS_ONE_CC-BY.pdf Paper\
 
-# 2) 然后按 README「从零到出稿」七步执行；
-#    第 1 步需要你自己（或你的翻译流程）产出 Paper\29_SRplot_..._中文.md
+# 2) 然后按 README「快速开始」步骤 0–7 执行；
+#    第 1 步需要你自己（或你的翻译流程）产出 Paper\<NN>_SRplot_2023_PLOS_ONE_中文.md（如 01_...；原件无需改名，runpaper.py 会自动匹配带 _CC-BY 后缀的文件）
 ```
 
 > ⚠️ 注意：本 skill 的输入契约是「原件 PDF + **中文译稿 md**」。
