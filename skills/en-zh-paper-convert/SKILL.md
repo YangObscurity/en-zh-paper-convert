@@ -2,7 +2,7 @@
 name: en-zh-paper-convert
 description: 将英文论文 PDF 转换为格式保留的中文论文 PDF——单栏/双栏、纸张尺寸与页边距逐篇照原件，图从原件无损提取、表用 show_pdf_page 从原件矢量复刻（绝不手写 LaTeX 表），表内保留英文、图表题译中文，交付件不含任何译者信息。当用户要求「把英文论文/PDF 翻译成中文并保持原排版」「复刻这篇论文的版式和图表」「批量把论文做成中文 PDF」时使用。
 license: MIT
-compatibility: 需要 Python 3.11+ 与 PyMuPDF（fitz）；编译需要 xelatex/tectonic + Noto Serif SC / Noto Sans SC（Windows 自带，回退 SimSun）。源 PDF 若为完全扫描件（无文本层）需先 OCR。在 Windows 上运行：PowerShell 写 UTF-8 会带 BOM，脚本内容一律用 ASCII。
+compatibility: 需要 Python 3.11+、PyMuPDF（fitz）与 pandoc（Markdown→LaTeX）；编译需要 xelatex/tectonic + Noto Serif SC / Noto Sans SC（Windows 自带，回退 SimSun）。源 PDF 若为完全扫描件（无文本层）需先 OCR。在 Windows 上运行：PowerShell 写 UTF-8 会带 BOM，脚本内容一律用 ASCII。
 metadata:
   version: "1.0"
   domain: academic-typesetting
@@ -72,7 +72,7 @@ python scripts/runpaper.py <NN> --outdir out --geometry .work\<NN>\geometry.json
 | `tools/tectonic.exe` + `.venv/`（可能在技能根或工作区根） | `setup_env.py` | ❌ 忽略 |
 
 ⚠️ **两个输入缺失时门控会「拒绝出稿」/判 FAIL —— 这是设计，不是 bug**：
-- 缺台账 → `exit 1`「台账中无 #NN 的版式记录 -> 拒绝出稿」（R2/R3 的强制点）
+- 缺台账 → `exit 2`「台账中无 #NN 的版式记录 -> 拒绝出稿」（R2/R3 的强制点）
 - 缺几何 → `GATE-FAIL: geom-missing`
 
 **两个登记文件（override / SOURCE-GAP）保存在本地 `Paper/` 中** —— 它们是用户的「人工校准规则」，
@@ -213,7 +213,7 @@ python scripts/runpaper.py X9 --mode access    # -> REFUSING TO BUILD ... exit 2
 表题由 LaTeX 渲染中文，**导出区域不含英文表题**。详见 `references/tables.md`（含三态判定与区域定位算法）。
 
 ### 8. 编译
-编译一次即可（后端自行重跑到收敛）。日志必须落盘并**53ef读**（local-tectonic 为 `.work/<NN>/main.log`）。
+编译一次即可（后端自行重跑到收敛）。日志必须落盘并**可读**（local-tectonic 为 `.work/<NN>/main.log`）。
 
 ### 9. 门控 + 目视抽验
 跑门控清单（见下），**任何一项不过 → 回到步骤 5–8 修**，不得放行。
@@ -260,7 +260,7 @@ python scripts/runpaper.py X9 --mode access    # -> REFUSING TO BUILD ... exit 2
 
 **回归纪律**：改脚本后跑回归用例集（至少覆盖「侧栏图题」「矢量多子图」「无框线表」「长标识符表」四类）。**当改动收益是纯观感、而失败模式是回归时，回到已验证状态**。
 
-## Gotchas（22 条，完整版见 `references/gotchas.md`）
+## Gotchas（精选 22 条，完整 28 条见 `references/gotchas.md`）
 
 1. **`geometry` 的 `pt` 是 TeX point（1/72.27in），不是 PostScript point** → 全库统一缩小 0.374%（612→609.71）。**必须用 `bp`**。
 2. **IEEEtran 只认 `letterpaper`/`a4paper`**：`\geometry{paperwidth=}` 与 `\pdfpagewidth` **都被忽略**。要自定义纸张就换 `article[twocolumn]`。
@@ -303,7 +303,7 @@ python scripts/runpaper.py X9 --mode access    # -> REFUSING TO BUILD ... exit 2
 | `references/tables.md` | 表格三态判定与矢量复刻区域定位算法 |
 | `references/figures.md` | 图提取、图题锚定、图形簇算法 |
 | `references/gates.md` | 门控口径明细与失败定位手册 |
-| `references/gotchas.md` | 踩坑清单完整版（20 条，含根因与修法） |
+| `references/gotchas.md` | 踩坑清单完整版（28 条，含根因与修法） |
 | `references/environment.md` | **环境为首要**：P0 预检、所需工具/字体、`setup_env.py`、缺依赖如何显式失败 |
 
 > **日志文件名**：默认后端 `local-tectonic` 会自行重跑到收敛，日志落在 `.work/<NN>/main.log`（**不是 b1.log / b2.log**）。只有可选的 `ssh-xelatex` 后端才用 xelatex 两遍、写 `b1.log`/`b2.log`。上面的门控都指向“当前编译日志”。

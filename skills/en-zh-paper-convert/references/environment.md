@@ -74,4 +74,4 @@ tools/tectonic.zip      # 原始分发包（~18 MB，可选保留）
 
 - **首次编译需联网**（拉 TeX 宏包）；离线场景未测试 → 待补 `--only-cached` 预拉流程
 - `ssh-xelatex` 后端**未在真实远端验证**
-- 三栏版式**不支持**（见待决项）
+- 三栏版式已通过 `multicol` 支持（`--mode tri`，见 `SKILL.md` §4 与 `references/gotchas.md` #21）；4 栏及以上仍拒绝出稿
